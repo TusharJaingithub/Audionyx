@@ -11,7 +11,7 @@
     justify-content: center;
 }
 
-items-center {
+.items-center {
     align-items: center;
 }
 
@@ -30,11 +30,11 @@ items-center {
 }
 
 .rounded {
-    border-radius: 5px;
+    border-radius: 7px;
 }
 
 .m-1 {
-    margin: 4px;
+    margin: 5px;
 }
 
 .p-1 {
