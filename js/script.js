@@ -32,7 +32,7 @@ async function getSongs(folder) {
       songs.push(href.split(`/${folder}/`)[1]);
     }
   });
-    let songUL = document
+  let songUL = document
     .querySelector(".songList")
     .getElementsByTagName("ul")[0];
 
@@ -59,14 +59,14 @@ async function getSongs(folder) {
   }
 
   // ✅ Add click listeners to play songs
-  Array.from(document.querySelector(".songList").getElementsByTagName("li")).forEach(
-    (li, index) => {
-      li.addEventListener("click", () => {
-        playMusic(songs[index]);
-      });
-    }
-  );
-   return songs;
+  Array.from(
+    document.querySelector(".songList").getElementsByTagName("li")
+  ).forEach((li, index) => {
+    li.addEventListener("click", () => {
+      playMusic(songs[index]);
+    });
+  });
+  return songs;
 }
 
 const playMusic = (track, pause = false) => {
@@ -88,26 +88,24 @@ const playMusic = (track, pause = false) => {
   ).innerHTML = `<b>${songName}</b><br><small>${singerName}</small>`;
   document.querySelector(".songTime").innerHTML = "00:00 / 00:00";
 
- 
- // ✅ Highlight active song as per your theme
-let lis = document.querySelectorAll(".songList li");
-lis.forEach((li, i) => {
-  // Reset
-  li.style.background = "";
-  li.style.color = "";
-  li.querySelector(".info div:first-child").style.fontWeight = "normal";
-  li.querySelector(".info div:first-child").style.color = "#fff";
-  li.querySelector(".info div:last-child").style.color = "#888";
+  // ✅ Highlight active song as per your theme
+  let lis = document.querySelectorAll(".songList li");
+  lis.forEach((li, i) => {
+    // Reset
+    li.style.background = "";
+    li.style.color = "";
+    li.querySelector(".info div:first-child").style.fontWeight = "normal";
+    li.querySelector(".info div:first-child").style.color = "#fff";
+    li.querySelector(".info div:last-child").style.color = "#888";
 
-  // If current song matches
-  if (decodeURIComponent(songs[i]) === decodeURIComponent(track)) {
-    li.style.background = "#6c6c6cff"; // dark background
-    li.querySelector(".info div:first-child").style.color = "#00e0ff"; // neon blue song
-    li.querySelector(".info div:first-child").style.fontWeight = "bold";
-    li.querySelector(".info div:last-child").style.color = "#00e0ff"; // artist blue song
-  }
-});
-
+    // If current song matches
+    if (decodeURIComponent(songs[i]) === decodeURIComponent(track)) {
+      li.style.background = "#6c6c6cff"; // dark background
+      li.querySelector(".info div:first-child").style.color = "#00e0ff"; // neon blue song
+      li.querySelector(".info div:first-child").style.fontWeight = "bold";
+      li.querySelector(".info div:last-child").style.color = "#00e0ff"; // artist blue song
+    }
+  });
 };
 
 async function displayAlbums() {
@@ -118,18 +116,18 @@ async function displayAlbums() {
   let links = doc.querySelectorAll("a");
 
   let cardContainer = document.querySelector(".cardContainer");
-    for(let i=0;i<links.length;i++){
-      const link=links[i];
-    
+  for (let i = 0; i < links.length; i++) {
+    const link = links[i];
+
     let href = link.getAttribute("href");
     if (href.startsWith("/songs/") && !href.includes(".htaccess")) {
       let folder = href.split("/").slice(-1)[0];
-    
-    //Get the meta data from the folder
-     let a = await fetch(`/songs/${folder}/info.json`);
-  let response = await a.json();
 
-       cardContainer.innerHTML+=`<div data-folder="${folder}" class="card">
+      //Get the meta data from the folder
+      let a = await fetch(`/songs/${folder}/info.json`);
+      let response = await a.json();
+
+      cardContainer.innerHTML += `<div data-folder="${folder}" class="card">
               <div class="play">
                 <svg
                   width="16"
@@ -159,26 +157,23 @@ async function displayAlbums() {
                  ${response.description}
                 </p>
               </div>
-            </div>`
+            </div>`;
     }
   }
-  
+
   // Load the playlist whenever card is clicked
-  Array.from(document.getElementsByClassName("card")).forEach( e=>{
-    e.addEventListener("click",async item=>{ 
-      song= await getSongs(`songs/${item.currentTarget.dataset.folder}`)
+  Array.from(document.getElementsByClassName("card")).forEach((e) => {
+    e.addEventListener("click", async (item) => {
+      song = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
       playMusic(songs[0]); // start paused with first song info
-    })
-  })
- 
+    });
+  });
 }
 async function main() {
- 
+  // Display all the albums / playlists
+  await displayAlbums();
 
-// Display all the albums / playlists
-   await displayAlbums()
-
-   // Automatically pick the first card's folder (if available)
+  // Automatically pick the first card's folder (if available)
   const firstCard = document.querySelector(".card");
   if (firstCard) {
     let firstFolder = firstCard.dataset.folder;
@@ -208,8 +203,7 @@ async function main() {
 
   // ✅ Seekbar click
   document.querySelector(".seekbar").addEventListener("click", (e) => {
-    let percent =
-      (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+    let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
     document.querySelector(".circle").style.left = percent + "%";
     currentSong.currentTime = (currentSong.duration * percent) / 100;
   });
@@ -239,82 +233,75 @@ async function main() {
     let currentFile = currentSong.src.split("/").slice(-1)[0];
     let index = songs.indexOf(currentFile);
     if (index !== -1 && index < songs.length - 1) {
-            playMusic(songs[index + 1]);
+      playMusic(songs[index + 1]);
     } else {
       playMusic(songs[0]);
     }
   });
 
   // ✅ Auto play next when song ends
-currentSong.addEventListener("ended", () => {
-  let currentFile = currentSong.src.split("/").slice(-1)[0];
-  let index = songs.indexOf(currentFile);
+  currentSong.addEventListener("ended", () => {
+    let currentFile = currentSong.src.split("/").slice(-1)[0];
+    let index = songs.indexOf(currentFile);
 
-  if (index !== -1 && index < songs.length - 1) {
-    playMusic(songs[index + 1]); // play next song
-  } else {
-    playMusic(songs[0]); // loop back to first
-  }
-});
-
-
+    if (index !== -1 && index < songs.length - 1) {
+      playMusic(songs[index + 1]); // play next song
+    } else {
+      playMusic(songs[0]); // loop back to first
+    }
+  });
 
   // ✅ Volume
   vol.addEventListener("input", (e) => {
     currentSong.volume = parseInt(e.target.value) / 100;
   });
 
-  
-    // Add event listener to mute the track
-    
-    // Select elements
-const volumeIcon = document.querySelector(".volume img");
-const volumeRange = document.querySelector(".volume .range input");
+  // Add event listener to mute the track
 
-// 🎵 Your <audio> element
-let audio = currentSong;
+  // Select elements
+  const volumeIcon = document.querySelector(".volume img");
+  const volumeRange = document.querySelector(".volume .range input");
 
-// Default volume
-audio.volume = 0.5;
-volumeRange.value = audio.volume * 100;
+  // 🎵 Your <audio> element
+  let audio = currentSong;
 
-// Click on icon (toggle mute/unmute)
-volumeIcon.addEventListener("click", () => {
+  // Default volume
+  audio.volume = 0.5;
+  volumeRange.value = audio.volume * 100;
+
+  // Click on icon (toggle mute/unmute)
+  volumeIcon.addEventListener("click", () => {
     if (audio.volume > 0) {
-        // mute
-        audio.volume = 0;
-        volumeRange.value = 0;
-        volumeIcon.src = "img/mute.svg";
+      // mute
+      audio.volume = 0;
+      volumeRange.value = 0;
+      volumeIcon.src = "img/mute.svg";
     } else {
-        // unmute (set a default value like 50%)
-        audio.volume = 0.5;
-        volumeRange.value = 50;
-        volumeIcon.src = "img/volume.svg";
+      // unmute (set a default value like 50%)
+      audio.volume = 0.5;
+      volumeRange.value = 50;
+      volumeIcon.src = "img/volume.svg";
     }
-});
+  });
 
-// Range input (adjust volume + update icon)
-let warnedHighVolume = false; // flag to track if warning shown
-volumeRange.addEventListener("input", () => {
+  // Range input (adjust volume + update icon)
+  let warnedHighVolume = false; // flag to track if warning shown
+  volumeRange.addEventListener("input", () => {
     let value = volumeRange.value;
     audio.volume = value / 100;
 
     if (value == 0) {
-        volumeIcon.src = "img/mute.svg";
+      volumeIcon.src = "img/mute.svg";
     } else {
-        volumeIcon.src = "img/volume.svg";
+      volumeIcon.src = "img/volume.svg";
     }
     if (value > 80 && !warnedHighVolume) {
-  alert("⚠️ High volume can damage your ears if using earphones!");
-  warnedHighVolume = true;
-} else if (value <= 80) {
-  warnedHighVolume = false; // reset when volume is safe
-}
-
-});
-
-
-
+      alert("⚠️ High volume can damage your ears if using earphones!");
+      warnedHighVolume = true;
+    } else if (value <= 80) {
+      warnedHighVolume = false; // reset when volume is safe
+    }
+  });
 }
 
 main();

@@ -188,8 +188,9 @@ body {
 
     background-color: rgb(105, 103, 103);
     cursor: pointer;
-    
+
 }
+
 .card:hover .play {
     opacity: 1;
     top: 140px;
@@ -361,8 +362,8 @@ body {
 
 @media (max-width: 1250px) {
     .left {
-        position: absolute;
-        left: -130%;
+
+        left: -133%;
         transition: all 0.3s ease;
         z-index: 1;
         width: 370px;
@@ -411,7 +412,7 @@ body {
     }
 
     .aboveBar {
-        
+
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -466,7 +467,6 @@ body {
 
     .left {
         width: 100vw;
+
     }
-
-
 }
