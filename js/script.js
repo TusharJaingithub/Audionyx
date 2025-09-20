@@ -19,7 +19,7 @@ function secondsToMinutesSeconds(seconds) {
 
 async function getSongs(folder) {
   currFolder = folder;
-  let a = await fetch(`http://127.0.0.1:5500/${folder}/`);
+  let a = await fetch(`/${folder}/`);
   let response = await a.text();
   let parser = new DOMParser();
   let doc = parser.parseFromString(response, "text/html");
@@ -122,11 +122,11 @@ async function displayAlbums() {
       const link=links[i];
     
     let href = link.getAttribute("href");
-    if (href.startsWith("/songs/")) {
+    if (href.startsWith("/songs/") && !href.includes(".htaccess")) {
       let folder = href.split("/").slice(-1)[0];
     
     //Get the meta data from the folder
-     let a = await fetch(`http://127.0.0.1:5500/songs/${folder}/info.json`);
+     let a = await fetch(`/songs/${folder}/info.json`);
   let response = await a.json();
 
        cardContainer.innerHTML+=`<div data-folder="${folder}" class="card">
