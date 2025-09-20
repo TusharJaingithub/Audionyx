@@ -178,7 +178,7 @@ body {
     align-items: center;
     justify-content: center;
     position: absolute;
-    top: 160px;
+    bottom: 18vh;
     right: 24px;
     opacity: 0;
     transition: all 1s ease-out;
@@ -193,7 +193,7 @@ body {
 
 .card:hover .play {
     opacity: 1;
-    top: 140px;
+    bottom: 20vh;
 }
 
 .playbar {
@@ -436,8 +436,10 @@ body {
     .cardContainer {
         max-height: unset;
         overflow-y: unset;
-        margin-bottom: 35vh;
+        margin-bottom: 25vh;
     }
+   
+
 }
 
 @media (max-width: 500px) {
@@ -469,4 +471,5 @@ body {
         width: 100vw;
 
     }
+    
 }
