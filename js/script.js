@@ -46,14 +46,14 @@ async function getSongs(folder) {
 
     songUL.innerHTML += `
       <li>
-        <img class=" invert musicSvg" src="music.svg" alt="">
+        <img class=" invert musicSvg" src="img/music.svg" alt="">
         <div class="info">
           <div>${songName}</div>
           <div>${singerName}</div>
         </div>
         <div class="playnow">
           <span>Play Now</span>
-          <img class="invert" src="play.svg" alt="">
+          <img class="invert" src="img/play.svg" alt="">
         </div>
       </li>`;
   }
@@ -73,7 +73,7 @@ const playMusic = (track, pause = false) => {
   currentSong.src = `${currFolder}/` + track;
   if (!pause) {
     currentSong.play();
-    play.src = "pause.svg";
+    play.src = "img/pause.svg";
   }
 
   // ✅ Clean song name + artist
@@ -105,8 +105,6 @@ lis.forEach((li, i) => {
     li.querySelector(".info div:first-child").style.color = "#00e0ff"; // neon blue song
     li.querySelector(".info div:first-child").style.fontWeight = "bold";
     li.querySelector(".info div:last-child").style.color = "#00e0ff"; // artist blue song
-    // li.querySelector(".musicSvg").style.fill="#00e0ff" // highlight playing icon
-    
   }
 });
 
@@ -169,15 +167,13 @@ async function displayAlbums() {
   Array.from(document.getElementsByClassName("card")).forEach( e=>{
     e.addEventListener("click",async item=>{ 
       song= await getSongs(`songs/${item.currentTarget.dataset.folder}`)
-      
+      playMusic(songs[0]); // start paused with first song info
     })
   })
  
 }
 async function main() {
-  // await getSongs("/songs/cs");
-  // console.log(songs);
-  // playMusic(songs[0], true);
+ 
 
 // Display all the albums / playlists
    await displayAlbums()
@@ -194,10 +190,10 @@ async function main() {
   play.addEventListener("click", () => {
     if (currentSong.paused) {
       currentSong.play();
-      play.src = "pause.svg";
+      play.src = "img/pause.svg";
     } else {
       currentSong.pause();
-      play.src = "play.svg";
+      play.src = "img/play.svg";
     }
   });
 
@@ -288,12 +284,12 @@ volumeIcon.addEventListener("click", () => {
         // mute
         audio.volume = 0;
         volumeRange.value = 0;
-        volumeIcon.src = "mute.svg";
+        volumeIcon.src = "img/mute.svg";
     } else {
         // unmute (set a default value like 50%)
         audio.volume = 0.5;
         volumeRange.value = 50;
-        volumeIcon.src = "volume.svg";
+        volumeIcon.src = "img/volume.svg";
     }
 });
 
@@ -304,9 +300,9 @@ volumeRange.addEventListener("input", () => {
     audio.volume = value / 100;
 
     if (value == 0) {
-        volumeIcon.src = "mute.svg";
+        volumeIcon.src = "img/mute.svg";
     } else {
-        volumeIcon.src = "volume.svg";
+        volumeIcon.src = "img/volume.svg";
     }
     if (value > 80 && !warnedHighVolume) {
   alert("⚠️ High volume can damage your ears if using earphones!");
