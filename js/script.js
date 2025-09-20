@@ -103,10 +103,14 @@ const playMusic = (track, pause = false) => {
       li.style.background = "#6c6c6cff"; // dark background
       li.querySelector(".info div:first-child").style.color = "#00e0ff"; // neon blue song
       li.querySelector(".info div:first-child").style.fontWeight = "bold";
-      li.querySelector(".info div:last-child").style.color = "#00e0ff"; // artist blue song
+      li.querySelector(".info div:last-child").style.color = "#00e0ff";// artist blue song
+        li.querySelector(".playnow img").src = "img/pause.svg"; // change play → pause
+    } else {
+      li.querySelector(".playnow img").src = "img/play.svg";
     }
-  });
-};
+
+    });
+  }
 
 async function displayAlbums() {
   let a = await fetch(`http://127.0.0.1:5500/songs/`);
@@ -197,8 +201,10 @@ async function main() {
     document.querySelector(".songTime").innerHTML = `${secondsToMinutesSeconds(
       currentSong.currentTime
     )} / ${secondsToMinutesSeconds(currentSong.duration)}`;
-    document.querySelector(".seekbar .circle").style.left =
-      (currentSong.currentTime / currentSong.duration) * 100 + "%";
+    requestAnimationFrame(() => {
+      document.querySelector(".seekbar .circle").style.left =
+        (currentSong.currentTime / currentSong.duration) * 100 + "%";
+    });
   });
 
   // ✅ Seekbar click
@@ -239,17 +245,63 @@ async function main() {
     }
   });
 
-  // ✅ Auto play next when song ends
-  currentSong.addEventListener("ended", () => {
-    let currentFile = currentSong.src.split("/").slice(-1)[0];
-    let index = songs.indexOf(currentFile);
+  // Shuffle and Repeat buttons
+const shuffleBtn = document.getElementById("shuffle");
+const repeatBtn = document.getElementById("repeat");
 
-    if (index !== -1 && index < songs.length - 1) {
-      playMusic(songs[index + 1]); // play next song
+let isShuffle = false;
+let isRepeat = false;
+
+shuffleBtn.addEventListener("click", () => {
+  isShuffle = !isShuffle;
+  shuffleBtn.classList.toggle("active", isShuffle);
+});
+
+repeatBtn.addEventListener("click", () => {
+  isRepeat = !isRepeat;
+  repeatBtn.classList.toggle("active", isRepeat);
+});
+const repeatAllBtn = document.getElementById("repeatAll");
+let isRepeatAll = false;
+
+// Toggle Repeat All
+repeatAllBtn.addEventListener("click", () => {
+  isRepeatAll = !isRepeatAll;
+  repeatAllBtn.classList.toggle("active", isRepeatAll);
+});
+
+// Handle song end based on modes
+currentSong.addEventListener("ended", () => {
+  let currentIndex = songs.indexOf(currentSong.src.split("/").slice(-1)[0]);
+
+  if (isRepeat) {
+    // Repeat current song
+    playMusic(songs[currentIndex]);
+  } else if (isShuffle) {
+    // Shuffle mode
+    let randomIndex;
+    do {
+      randomIndex = Math.floor(Math.random() * songs.length);
+    } while (randomIndex === currentIndex && songs.length > 1);
+    playMusic(songs[randomIndex]);
+  } else if (isRepeatAll) {
+    // Repeat whole playlist
+    let nextIndex = (currentIndex + 1) % songs.length;
+    playMusic(songs[nextIndex]);
+  } else {
+    // Normal next
+    if (currentIndex < songs.length - 1) {
+      playMusic(songs[currentIndex + 1]);
     } else {
-      playMusic(songs[0]); // loop back to first
+      currentSong.pause(); // stop at last song
+      play.src = "img/play.svg";
     }
-  });
+  }
+});
+
+
+
+  
 
   // ✅ Volume
   vol.addEventListener("input", (e) => {
