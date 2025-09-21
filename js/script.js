@@ -163,6 +163,7 @@ async function displayAlbums() {
               </div>
             </div>`;
     }
+    
   }
 
   // Load the playlist whenever card is clicked
