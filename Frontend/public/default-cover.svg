@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#15803d"/>
+      <stop offset="0.55" stop-color="#18181b"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="28" fill="url(#bg)"/>
+  <circle cx="200" cy="200" r="102" fill="#050505" opacity="0.85"/>
+  <circle cx="200" cy="200" r="72" fill="none" stroke="#22c55e" stroke-width="14"/>
+  <circle cx="200" cy="200" r="18" fill="#ffffff"/>
+  <path d="M136 128c32-28 96-28 128 0" fill="none" stroke="#ffffff" stroke-width="12" stroke-linecap="round" opacity="0.9"/>
+  <path d="M158 278c26 16 58 16 84 0" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+  <text x="200" y="352" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" font-weight="700" fill="#ffffff">Audionyx</text>
+</svg>
