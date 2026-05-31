@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import MusicCard from "../components/MusicCard";
 import { getAllMusics } from "../api/musicApi";
 import { useMusic } from "../hooks/useMusic";
-import { FaPlay, FaBus } from "react-icons/fa";
+import { FaPlay } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -78,7 +78,11 @@ function Home() {
   };
 
   return (
-    <MainLayout>
+    <MainLayout
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      onSearch={() => loadMusics(1)}
+    >
       <div className="min-h-0 flex-1 flex flex-col">
       <section className="bg-gradient-to-b rounded-2xl from-emerald-700 via-zinc-900 to-black p-4 md:p-6 mb-3 shrink-0">
         <p className="text-xs md:text-sm text-white font-semibold mb-2">
@@ -104,31 +108,6 @@ function Home() {
         )}
       </section>
 
-      <div className="flex flex-col gap-3 px-4 md:px-6 mb-4">
-        <div className="flex items-center gap-2 text-green-400 text-sm font-semibold">
-          <FaBus className="text-lg" />
-          <span>Search for your favorite track</span>
-        </div>
-        <div className="flex gap-2 flex-col sm:flex-row">
-          <input
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search songs by title..."
-            className="w-full rounded-xl border border-zinc-800 bg-zinc-950 text-white px-4 py-3 focus:border-green-500 outline-none"
-          />
-          <button
-            onClick={() => loadMusics(1)}
-            className="rounded-xl bg-green-500 hover:bg-green-400 text-black font-semibold px-5 py-3"
-          >
-            Search
-          </button>
-        </div>
-        {searchTerm && (
-          <p className="text-sm text-gray-400">
-            Showing results for <span className="text-white">"{searchTerm}"</span>
-          </p>
-        )}
-      </div>
 
       <div className="flex items-center justify-between mb-3 px-4 md:px-6 shrink-0">
         <h2 className="text-2xl text-white font-bold">
