@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 
 async function authArtist(req,res,next){
+     console.log("Cookies:", req.cookies);
+    console.log("Token:", req.cookies.token);
     const token = req.cookies.token;
     if(!token){
         return res.status(401).json({message:"Unauthorized"})
