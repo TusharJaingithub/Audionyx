@@ -79,14 +79,20 @@ async function getAllMusics(req,res){
   const page = Number(req.query.page) || 1;
   const limit = Number(req.query.limit) || 8;
   const skip = (page - 1) * limit;
+  const search = req.query.search?.trim();
+
+  const filter = {};
+  if (search) {
+    filter.title = { $regex: search, $options: "i" };
+  }
 
   const [musics, total] = await Promise.all([
     musicModel
-      .find()
+      .find(filter)
       .skip(skip)
       .limit(limit)
       .populate("artist","username email"),
-    musicModel.countDocuments(),
+    musicModel.countDocuments(filter),
   ]);
 
   res.status(200).json({

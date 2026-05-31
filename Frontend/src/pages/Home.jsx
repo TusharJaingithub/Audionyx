@@ -26,6 +26,8 @@ function Home() {
     playSong(musics[0], musics);
   };
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const loadMusics = async (pageNumber = 1) => {
     if (loading) {
       return;
@@ -36,6 +38,7 @@ function Home() {
       const data = await getAllMusics({
         page: pageNumber,
         limit: 8,
+        search: searchTerm,
       });
 
       setMusics((currentMusics) =>
@@ -100,6 +103,28 @@ function Home() {
           </button>
         )}
       </section>
+
+      <div className="flex flex-col gap-3 px-4 md:px-6 mb-4">
+        <div className="flex gap-2 flex-col sm:flex-row">
+          <input
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Search songs by title..."
+            className="w-full rounded-xl border border-zinc-800 bg-zinc-950 text-white px-4 py-3 focus:border-green-500 outline-none"
+          />
+          <button
+            onClick={() => loadMusics(1)}
+            className="rounded-xl bg-green-500 hover:bg-green-400 text-black font-semibold px-5 py-3"
+          >
+            Search
+          </button>
+        </div>
+        {searchTerm && (
+          <p className="text-sm text-gray-400">
+            Showing results for <span className="text-white">"{searchTerm}"</span>
+          </p>
+        )}
+      </div>
 
       <div className="flex items-center justify-between mb-3 px-4 md:px-6 shrink-0">
         <h2 className="text-2xl text-white font-bold">

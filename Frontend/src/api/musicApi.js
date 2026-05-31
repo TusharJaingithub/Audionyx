@@ -4,10 +4,18 @@ import api from "./axios";
 export const getAllMusics = async ({
   page = 1,
   limit = 8,
+  search = "",
 } = {}) => {
-  const response = await api.get(
-    `/music?page=${page}&limit=${limit}`
-  );
+  const query = new URLSearchParams({
+    page: String(page),
+    limit: String(limit),
+  });
+
+  if (search) {
+    query.append("search", search);
+  }
+
+  const response = await api.get(`/music?${query.toString()}`);
   return response.data;
 };
 
