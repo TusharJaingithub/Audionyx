@@ -3,7 +3,7 @@ import MainLayout from "../layouts/MainLayout";
 import MusicCard from "../components/MusicCard";
 import { getAllMusics } from "../api/musicApi";
 import { useMusic } from "../hooks/useMusic";
-import { FaPlay } from "react-icons/fa";
+import { FaPlay, FaBus } from "react-icons/fa";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
@@ -105,6 +105,10 @@ function Home() {
       </section>
 
       <div className="flex flex-col gap-3 px-4 md:px-6 mb-4">
+        <div className="flex items-center gap-2 text-green-400 text-sm font-semibold">
+          <FaBus className="text-lg" />
+          <span>Search for your favorite track</span>
+        </div>
         <div className="flex gap-2 flex-col sm:flex-row">
           <input
             value={searchTerm}
