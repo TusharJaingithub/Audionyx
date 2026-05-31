@@ -3,6 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useMusic } from "../hooks/useMusic";
 import { logoutUser } from "../api/authApi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { FaBus } from "react-icons/fa";
 
 function Navbar() {
   const { logout } = useAuth();
@@ -42,9 +43,12 @@ function Navbar() {
           <FaChevronRight />
         </button>
 
-        <h2 className="text-white text-xl font-semibold">
-          Welcome
-        </h2>
+        <div className="flex items-center gap-2">
+          <FaBus className="text-green-400" />
+          <h2 className="text-white text-xl font-semibold">
+            Welcome
+          </h2>
+        </div>
       </div>
 
       <div className="flex items-center gap-4">
