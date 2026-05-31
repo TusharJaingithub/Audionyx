@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useMusic } from "../hooks/useMusic";
 import { logoutUser } from "../api/authApi";
-import { FaChevronLeft, FaChevronRight, FaSearch } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight, FaSearch, FaSignOutAlt } from "react-icons/fa";
 
 function Navbar({ searchTerm, setSearchTerm, onSearch }) {
   const { logout } = useAuth();
@@ -69,8 +69,9 @@ function Navbar({ searchTerm, setSearchTerm, onSearch }) {
       <div className="flex items-center gap-4">
         <button
           onClick={handleLogout}
-          className="cursor-pointer bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white"
+          className="cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 px-4 py-2 rounded-full text-white font-semibold shadow-lg shadow-red-500/20 transition-all duration-200"
         >
+          <FaSignOutAlt />
           Logout
         </button>
       </div>
