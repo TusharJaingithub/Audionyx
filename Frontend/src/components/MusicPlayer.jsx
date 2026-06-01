@@ -232,11 +232,11 @@ function MusicPlayer() {
         </audio>
       </div>
 
-      <div className="flex items-center justify-end gap-3">
+      <div className="flex flex-col items-center justify-center gap-3 md:items-end md:justify-end">
         <button
           title="Mute / Unmute"
           onClick={() => setMuted((m) => !m)}
-          className="cursor-pointer text-gray-300 hover:text-white"
+          className="rounded-full border border-zinc-700 bg-zinc-900/90 p-2 text-gray-300 hover:text-white hover:border-zinc-500 transition"
         >
           {muted || volume === 0 ? (
             <FaVolumeMute />
@@ -247,36 +247,38 @@ function MusicPlayer() {
           )}
         </button>
 
-        <button
-          onClick={() => setVolume((v) => Math.max(0, +(v - 0.1).toFixed(2)))}
-          className="hidden sm:inline cursor-pointer text-gray-300 hover:text-white"
-          title="Volume down"
-        >
-          <FaVolumeDown />
-        </button>
+        <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-700 px-3 py-2 shadow-[0_10px_30px_-24px_rgba(0,0,0,0.75)]">
+          <button
+            onClick={() => setVolume((v) => Math.max(0, +(v - 0.1).toFixed(2)))}
+            className="rounded-full p-2 text-gray-300 hover:text-white transition"
+            title="Volume down"
+          >
+            <FaVolumeDown />
+          </button>
 
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={muted ? 0 : volume}
-          onChange={(e) => {
-            const v = Number(e.target.value);
-            setVolume(v);
-            if (v === 0) setMuted(true);
-            else setMuted(false);
-          }}
-          className="w-24 md:w-32 lg:w-40"
-        />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={muted ? 0 : volume}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setVolume(v);
+              if (v === 0) setMuted(true);
+              else setMuted(false);
+            }}
+            className="w-28 md:w-32 lg:w-44"
+          />
 
-        <button
-          onClick={() => setVolume((v) => Math.min(1, +(v + 0.1).toFixed(2)))}
-          className="hidden sm:inline cursor-pointer text-gray-300 hover:text-white"
-          title="Volume up"
-        >
-          <FaVolumeUp />
-        </button>
+          <button
+            onClick={() => setVolume((v) => Math.min(1, +(v + 0.1).toFixed(2)))}
+            className="rounded-full p-2 text-gray-300 hover:text-white transition"
+            title="Volume up"
+          >
+            <FaVolumeUp />
+          </button>
+        </div>
       </div>
     </div>
   );
