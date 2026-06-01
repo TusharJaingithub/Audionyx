@@ -157,22 +157,22 @@ function MusicPlayer() {
       </div>
 
       <div className="flex flex-col items-center gap-2 px-1 py-1">
-        <div className="flex items-center gap-3 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-2 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
+        <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-2 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
           <button
             onClick={playPrevious}
             disabled={!hasPrevious}
             className="rounded-full p-2 text-gray-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition"
             title="Previous"
           >
-            <FaBackwardStep />
+            <FaBackwardStep className="h-4 w-4" />
           </button>
 
           <button
             onClick={togglePlay}
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-400 text-black shadow-lg shadow-emerald-400/20 transition hover:scale-105"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400 text-black shadow-lg shadow-emerald-400/20 transition hover:scale-105"
             title="Play / Pause"
           >
-            {isPlaying ? <FaPause /> : <FaPlay />}
+            {isPlaying ? <FaPause className="h-4 w-4" /> : <FaPlay className="h-4 w-4" />}
           </button>
 
           <button
@@ -181,7 +181,7 @@ function MusicPlayer() {
             className="rounded-full p-2 text-gray-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition"
             title="Next"
           >
-            <FaForwardStep />
+            <FaForwardStep className="h-4 w-4" />
           </button>
 
           <button
@@ -193,11 +193,11 @@ function MusicPlayer() {
             }`}
             title="Shuffle"
           >
-            <FaShuffle />
+            <FaShuffle className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="flex w-full max-w-md flex-col gap-2">
+        <div className="flex w-full max-w-sm flex-col gap-2">
           <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500">
             <span>{formatTime(currentTime)}</span>
             <span className="h-1.5 flex-1 rounded-full bg-zinc-800">
@@ -221,21 +221,42 @@ function MusicPlayer() {
             className="player-range w-full"
           />
         </div>
+
+        <audio
+          ref={audioRef}
+          onEnded={playNext}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onTimeUpdate={(e) =>
+            setCurrentTime(e.currentTarget.currentTime)
+          }
+          onLoadedMetadata={(e) =>
+            setDuration(e.currentTarget.duration)
+          }
+          volume={volume}
+          muted={muted}
+          className="hidden"
+        >
+          <source
+            src={currentSong.uri}
+            type="audio/mpeg"
+          />
+        </audio>
       </div>
 
       <div className="flex flex-col items-center justify-center gap-2 md:items-end md:justify-end">
-        <div className="flex items-center gap-2 rounded-3xl bg-zinc-900/95 border border-emerald-500/20 px-2 py-2 shadow-[0_14px_45px_-30px_rgba(16,185,129,0.35)]">
+        <div className="flex items-center gap-2 rounded-full bg-zinc-900/95 border border-emerald-500/20 px-2 py-2 shadow-[0_14px_45px_-30px_rgba(16,185,129,0.25)]">
           <button
             title="Mute / Unmute"
             onClick={() => setMuted((m) => !m)}
             className="rounded-full bg-emerald-500/10 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/20 transition"
           >
             {muted || volume === 0 ? (
-              <FaVolumeMute />
+              <FaVolumeMute className="h-4 w-4" />
             ) : volume > 0.5 ? (
-              <FaVolumeUp />
+              <FaVolumeUp className="h-4 w-4" />
             ) : (
-              <FaVolumeDown />
+              <FaVolumeDown className="h-4 w-4" />
             )}
           </button>
 
@@ -244,10 +265,10 @@ function MusicPlayer() {
             className="rounded-full bg-zinc-950/80 border border-emerald-500/20 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
             title="Volume down"
           >
-            <FaVolumeDown />
+            <FaVolumeDown className="h-4 w-4" />
           </button>
 
-          <div className="flex w-28 md:w-32 lg:w-44 items-center rounded-full bg-zinc-950/75 px-2 py-1 border border-zinc-800">
+          <div className="flex w-24 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/75 px-2 py-1 border border-zinc-800">
             <input
               type="range"
               min="0"
@@ -269,12 +290,17 @@ function MusicPlayer() {
             className="rounded-full bg-zinc-950/80 border border-emerald-500/20 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
             title="Volume up"
           >
-            <FaVolumeUp />
+            <FaVolumeUp className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="hidden sm:inline-flex rounded-full border border-emerald-500/20 bg-zinc-900/80 px-3 py-1 text-[11px] uppercase tracking-[0.24em] text-emerald-300 shadow-[0_4px_24px_-18px_rgba(16,185,129,0.6)]">
-          Spacebar — play / pause
+        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-zinc-900/90 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-emerald-300 shadow-[0_4px_24px_-18px_rgba(16,185,129,0.4)]">
+          <span className="rounded-lg bg-zinc-950/95 px-2 py-1 text-[10px] tracking-[0.3em] text-white shadow-sm shadow-black/20">
+            SPACE
+          </span>
+          <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">
+            play / pause
+          </span>
         </div>
       </div>
     </div>
