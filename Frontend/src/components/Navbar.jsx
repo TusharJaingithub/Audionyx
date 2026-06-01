@@ -6,7 +6,7 @@ import { FaChevronLeft, FaChevronRight, FaSearch, FaSignOutAlt } from "react-ico
 
 function Navbar({ searchTerm, setSearchTerm, onSearch }) {
   const { logout, user } = useAuth();
-  const { clearPlayer } = useMusic();
+  const { clearPlayer, playNext, playPrevious, hasNext, hasPrevious } = useMusic();
 
   const navigate = useNavigate();
 
@@ -30,14 +30,20 @@ function Navbar({ searchTerm, setSearchTerm, onSearch }) {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          className="cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center"
+          onClick={() => playPrevious()}
+          disabled={!hasPrevious}
+          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!hasPrevious ? 'opacity-40 pointer-events-none' : ''}`}
+          aria-label="Previous"
         >
           <FaChevronLeft />
         </button>
 
         <button
           type="button"
-          className="cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center"
+          onClick={() => playNext()}
+          disabled={!hasNext}
+          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!hasNext ? 'opacity-40 pointer-events-none' : ''}`}
+          aria-label="Next"
         >
           <FaChevronRight />
         </button>

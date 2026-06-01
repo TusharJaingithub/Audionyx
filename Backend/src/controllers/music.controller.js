@@ -268,4 +268,5 @@ module.exports = {
   getAlbumById,
   getMusicsByArtist,
   addExistingMusicsToAlbum,
+  reorderAlbumTracks,
 };

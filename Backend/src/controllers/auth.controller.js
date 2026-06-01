@@ -30,13 +30,15 @@ async function registerUser(req, res) {
       expiresIn: "1d",
     },
   );
-  res
-    .cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    })
+  const isProd = process.env.NODE_ENV === "production";
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    maxAge: 24 * 60 * 60 * 1000,
+  };
+
+  res.cookie("token", token, cookieOptions)
     .status(201)
     .json({
       message: "User registered successfully",
@@ -80,14 +82,15 @@ async function loginUser(req, res) {
       expiresIn,
     },
   );
-  res
-    .cookie("token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge,
-    })
-    .status(200)
+  const isProd = process.env.NODE_ENV === "production";
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    maxAge,
+  };
+
+  res.cookie("token", token, cookieOptions).status(200)
     .json({
       message: "User logged in successfully",
       user: {
@@ -100,13 +103,14 @@ async function loginUser(req, res) {
 }
 
 async function logoutUser(req, res) {
- res.clearCookie("token", {
-  httpOnly: true,
-  secure: true,
-  sameSite: "none",
-}).status(200).json({
-    message: "User logged out successfully",
-  });
+  const isProd = process.env.NODE_ENV === "production";
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+  };
+
+  res.clearCookie("token", cookieOptions).status(200).json({ message: "User logged out successfully" });
 }
 
 module.exports = { registerUser, loginUser, logoutUser };
