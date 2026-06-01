@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import MainLayout from "../layouts/MainLayout";
 import { uploadMusic } from "../api/musicApi";
 import toast from "react-hot-toast";
@@ -8,6 +8,8 @@ function UploadMusic() {
   const [music, setMusic] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const musicInputRef = useRef(null);
+  const coverInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,6 +42,8 @@ function UploadMusic() {
       setTitle("");
       setMusic(null);
       setCoverImage(null);
+      if (musicInputRef.current) musicInputRef.current.value = null;
+      if (coverInputRef.current) coverInputRef.current.value = null;
     } catch (err) {
       console.log(err);
 
@@ -84,6 +88,7 @@ function UploadMusic() {
             onChange={(e) =>
               setMusic(e.target.files[0])
             }
+              ref={musicInputRef}
           />
 
           {music && (
@@ -103,6 +108,7 @@ function UploadMusic() {
             onChange={(e) =>
               setCoverImage(e.target.files[0])
             }
+              ref={coverInputRef}
           />
 
           {coverImage && (

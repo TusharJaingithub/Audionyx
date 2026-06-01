@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import MainLayout from "../layouts/MainLayout";
 import {
   getAllMusics,
@@ -9,6 +9,7 @@ function CreateAlbum() {
   const [title, setTitle] = useState("");
   const [musics, setMusics] = useState([]);
   const [selectedSongs, setSelectedSongs] = useState([]);
+  const formRef = useRef(null);
 
   useEffect(() => {
     loadSongs();
@@ -68,6 +69,7 @@ function CreateAlbum() {
 
       setTitle("");
       setSelectedSongs([]);
+        if (formRef.current) formRef.current.reset();
     } catch (err) {
       console.log(err);
       alert("Failed to create album");
@@ -82,6 +84,7 @@ function CreateAlbum() {
         </h1>
 
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           className="bg-zinc-900 p-6 rounded-xl"
         >

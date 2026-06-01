@@ -15,6 +15,7 @@ function Login() {
   });
 
   const [loading, setLoading] = useState(false);
+  const [remember, setRemember] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,6 +31,7 @@ function Login() {
         username: formData.identifier,
         email: formData.identifier,
         password: formData.password,
+        remember,
       });
 
       login(data.user);
@@ -92,6 +94,11 @@ function Login() {
           }
           className="w-full p-3 mb-5 rounded bg-zinc-800 text-white outline-none border border-zinc-700 focus:border-green-500"
         />
+
+        <label className="flex items-center gap-2 text-sm text-gray-300 mb-4">
+          <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+          <span>Remember me</span>
+        </label>
 
         <button
           type="submit"

@@ -50,7 +50,7 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
-  const { username, email, password } = req.body;
+  const { username, email, password, remember } = req.body;
 
   const user = await userModel.findOne({
     $or: [{ username: username }, { email: email }],
@@ -67,6 +67,9 @@ async function loginUser(req, res) {
     });
   }
 
+  const expiresIn = remember ? "30d" : "1d";
+  const maxAge = remember ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+
   const token = jwt.sign(
     {
       id: user._id,
@@ -74,7 +77,7 @@ async function loginUser(req, res) {
     },
     process.env.JWT_SECRET,
     {
-      expiresIn: "1d",
+      expiresIn,
     },
   );
   res
@@ -82,7 +85,7 @@ async function loginUser(req, res) {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge,
     })
     .status(200)
     .json({

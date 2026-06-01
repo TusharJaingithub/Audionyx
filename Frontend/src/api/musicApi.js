@@ -50,6 +50,21 @@ export const uploadMusic = async (formData) => {
   return response.data;
 };
 
+// Upload music directly to an album
+export const uploadMusicToAlbum = async (albumId, formData) => {
+  const response = await api.post(
+    `/music/albums/${albumId}/upload`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};
+
 // Create album
 export const createAlbum = async (albumData) => {
   const response = await api.post(
@@ -57,5 +72,23 @@ export const createAlbum = async (albumData) => {
     albumData
   );
 
+  return response.data;
+};
+
+// Get current authenticated artist's musics
+export const getMyMusics = async () => {
+  const response = await api.get("/music/artist");
+  return response.data;
+};
+
+// Add existing musics to album (array of ids)
+export const addExistingMusicsToAlbum = async (albumId, musicIds) => {
+  const response = await api.post(`/music/albums/${albumId}/add`, { musics: musicIds });
+  return response.data;
+};
+
+// Reorder album tracks (send ordered array of music ids)
+export const reorderAlbumTracks = async (albumId, musicIds) => {
+  const response = await api.put(`/music/albums/${albumId}/order`, { musics: musicIds });
   return response.data;
 };
