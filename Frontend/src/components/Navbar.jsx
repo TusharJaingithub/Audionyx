@@ -1,20 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useMusic } from "../hooks/useMusic";
+import { useRouteHistory } from "../context/RouteHistoryContext";
 import { logoutUser } from "../api/authApi";
 import { FaChevronLeft, FaChevronRight, FaSearch, FaSignOutAlt } from "react-icons/fa";
 
 function Navbar({ searchTerm, setSearchTerm, onSearch }) {
   const { logout, user } = useAuth();
-  const { clearPlayer, playNext, playPrevious, hasNext, hasPrevious } = useMusic();
+  const { goBack, goForward, canGoBack, canGoForward } = useRouteHistory();
 
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       await logoutUser();
-
-      clearPlayer();
 
       // User logout
       logout();
@@ -30,20 +28,22 @@ function Navbar({ searchTerm, setSearchTerm, onSearch }) {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => playPrevious()}
-          disabled={!hasPrevious}
-          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!hasPrevious ? 'opacity-40 pointer-events-none' : ''}`}
-          aria-label="Previous"
+          onClick={goBack}
+          disabled={!canGoBack}
+          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!canGoBack ? 'opacity-40 pointer-events-none' : ''}`}
+          aria-label="Go back"
+          title="Go back"
         >
           <FaChevronLeft />
         </button>
 
         <button
           type="button"
-          onClick={() => playNext()}
-          disabled={!hasNext}
-          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!hasNext ? 'opacity-40 pointer-events-none' : ''}`}
-          aria-label="Next"
+          onClick={goForward}
+          disabled={!canGoForward}
+          className={`cursor-pointer h-8 w-8 rounded-full bg-black text-gray-300 flex items-center justify-center ${!canGoForward ? 'opacity-40 pointer-events-none' : ''}`}
+          aria-label="Go forward"
+          title="Go forward"
         >
           <FaChevronRight />
         </button>
@@ -76,7 +76,7 @@ function Navbar({ searchTerm, setSearchTerm, onSearch }) {
         {user ? (
           <button
             onClick={handleLogout}
-            className="cursor-pointer inline-flex items-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 px-4 py-2 rounded-full text-white font-semibold shadow-lg shadow-red-500/20 transition-all duration-200"
+            className="cursor-pointer inline-flex items-center gap-2 bg-linear-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 px-4 py-2 rounded-full text-white font-semibold shadow-lg shadow-red-500/20 transition-all duration-200"
           >
             <FaSignOutAlt />
             Logout

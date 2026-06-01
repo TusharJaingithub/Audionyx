@@ -7,6 +7,7 @@ import "./index.css";
 
 import { AuthProvider } from "./context/AuthContext";
 import { MusicProvider } from "./context/MusicContext";
+import { RouteHistoryProvider } from "./context/RouteHistoryContext";
 
 ReactDOM.createRoot(
   document.getElementById("root")
@@ -14,9 +15,11 @@ ReactDOM.createRoot(
   <React.StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <MusicProvider>
-          <App />
-        </MusicProvider>
+        <RouteHistoryProvider>
+          <MusicProvider>
+            <App />
+          </MusicProvider>
+        </RouteHistoryProvider>
       </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>
