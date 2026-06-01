@@ -45,8 +45,10 @@ async function createMusic(req, res) {
 }
 
 async function createAlbum(req, res) {
-  
+    console.log("BODY:", req.body);
     const { title, musics } = req.body;
+     console.log("TITLE:", title);
+  console.log("MUSICS:", musics);
     const firstMusic = await musicModel.findById(musics?.[0]);
 
     if (!firstMusic) {
@@ -55,9 +57,11 @@ async function createAlbum(req, res) {
       });
     }
 
+    const coverImage = firstMusic.coverImage || "/default-cover.svg";
+
     const album = await albumModel.create({
       title,
-      coverImage: firstMusic.coverImage,
+      coverImage: coverImage,
       artist: req.user.id,
       musics: musics,
     });

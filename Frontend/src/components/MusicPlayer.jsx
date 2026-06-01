@@ -6,6 +6,11 @@ import {
   FaPlay,
   FaShuffle,
 } from "react-icons/fa6";
+import {
+  FaVolumeUp,
+  FaVolumeDown,
+  FaVolumeMute,
+} from "react-icons/fa";
 import { useMusic } from "../hooks/useMusic";
 
 function MusicPlayer() {
@@ -25,6 +30,12 @@ function MusicPlayer() {
     hasPrevious,
   } = useMusic();
 
+  const [volume, setVolume] = useState(() => {
+    const saved = localStorage.getItem("audionyx_volume");
+    return saved ? Number(saved) : 1;
+  });
+  const [muted, setMuted] = useState(false);
+
   useEffect(() => {
     if (currentSong && audioRef.current) {
       audioRef.current.load();
@@ -37,6 +48,13 @@ function MusicPlayer() {
         );
     }
   }, [currentSong]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = muted ? 0 : volume;
+    }
+    localStorage.setItem("audionyx_volume", String(volume));
+  }, [volume, muted]);
 
   const togglePlay = () => {
     if (!audioRef.current) {
@@ -204,6 +222,8 @@ function MusicPlayer() {
           onLoadedMetadata={(e) =>
             setDuration(e.currentTarget.duration)
           }
+          volume={volume}
+          muted={muted}
         >
           <source
             src={currentSong.uri}
@@ -212,7 +232,52 @@ function MusicPlayer() {
         </audio>
       </div>
 
-      <div className="hidden md:block"></div>
+      <div className="flex items-center justify-end gap-3">
+        <button
+          title="Mute / Unmute"
+          onClick={() => setMuted((m) => !m)}
+          className="cursor-pointer text-gray-300 hover:text-white"
+        >
+          {muted || volume === 0 ? (
+            <FaVolumeMute />
+          ) : volume > 0.5 ? (
+            <FaVolumeUp />
+          ) : (
+            <FaVolumeDown />
+          )}
+        </button>
+
+        <button
+          onClick={() => setVolume((v) => Math.max(0, +(v - 0.1).toFixed(2)))}
+          className="hidden sm:inline cursor-pointer text-gray-300 hover:text-white"
+          title="Volume down"
+        >
+          <FaVolumeDown />
+        </button>
+
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          value={muted ? 0 : volume}
+          onChange={(e) => {
+            const v = Number(e.target.value);
+            setVolume(v);
+            if (v === 0) setMuted(true);
+            else setMuted(false);
+          }}
+          className="w-24 md:w-32 lg:w-40"
+        />
+
+        <button
+          onClick={() => setVolume((v) => Math.min(1, +(v + 0.1).toFixed(2)))}
+          className="hidden sm:inline cursor-pointer text-gray-300 hover:text-white"
+          title="Volume up"
+        >
+          <FaVolumeUp />
+        </button>
+      </div>
     </div>
   );
 }

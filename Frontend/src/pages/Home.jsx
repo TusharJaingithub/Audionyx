@@ -84,12 +84,12 @@ function Home() {
       onSearch={() => loadMusics(1)}
     >
       <div className="min-h-0 flex-1 flex flex-col">
-      <section className="bg-gradient-to-b rounded-2xl from-emerald-700 via-zinc-900 to-black p-4 md:p-6 mb-3 shrink-0">
+      <section className="bg-gradient-to-b rounded-2xl from-emerald-700 via-zinc-900 to-black p-3 md:p-6 mb-3 shrink-0">
         <p className="text-xs md:text-sm text-white font-semibold mb-2">
           Welcome to Audionyx
         </p>
 
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl text-white font-black mb-2">
+        <h1 className="text-xl sm:text-2xl lg:text-4xl text-white font-black mb-2">
           Music for your moment
         </h1>
 
@@ -129,7 +129,7 @@ function Home() {
         <div
           ref={listRef}
           onScroll={handleScroll}
-          className="scrollbar-hidden overflow-y-auto scroll-smooth overscroll-contain px-4 md:px-6 pb-32 md:pb-28 min-h-[360px] flex-1"
+          className="scrollbar-hidden overflow-y-auto scroll-smooth overscroll-contain px-4 md:px-6 pb-40 md:pb-28 min-h-[360px] flex-1"
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 md:gap-4">
           {musics.map((music) => (

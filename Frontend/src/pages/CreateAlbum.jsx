@@ -76,7 +76,7 @@ function CreateAlbum() {
 
   return (
     <MainLayout>
-      <div className="max-w-3xl">
+      <div className="max-w-3xl pb-40 md:pb-0">
         <h1 className="text-3xl text-white font-bold mb-6">
           Create Album
         </h1>

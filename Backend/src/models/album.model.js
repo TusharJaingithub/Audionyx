@@ -7,7 +7,6 @@ const albumSchema = new mongoose.Schema({
   },
   coverImage: {
     type: String,
-    required: true,
   },
   musics: [{
     type: mongoose.Schema.Types.ObjectId,

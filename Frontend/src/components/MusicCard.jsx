@@ -19,7 +19,7 @@ function MusicCard({ music, songs = [] }) {
 
   return (
     <div className="group bg-zinc-900/80 p-3 rounded-lg hover:bg-zinc-800 transition duration-200">
-      <div className="relative aspect-square overflow-hidden rounded-md bg-zinc-800 shadow-lg">
+      <div className="relative aspect-video md:aspect-square overflow-hidden rounded-md bg-zinc-800 shadow-lg">
         <img
           src={music.coverImage || "/default-cover.svg"}
           alt={music.title}
