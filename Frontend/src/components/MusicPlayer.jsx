@@ -10,6 +10,7 @@ import {
   FaVolumeUp,
   FaVolumeDown,
   FaVolumeMute,
+  FaListUl,
 } from "react-icons/fa";
 import { useMusic } from "../hooks/useMusic";
 
@@ -136,25 +137,29 @@ function MusicPlayer() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80 px-3 py-2 shadow-[0_-18px_55px_-40px_rgba(15,23,42,0.95)] grid grid-cols-1 gap-2 md:grid-cols-[1.3fr_auto_0.9fr] items-center">
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="relative h-12 w-12 md:h-14 md:w-14 rounded-2xl overflow-hidden bg-zinc-900 shadow-lg">
-          <img
-            src={currentSong.coverImage || "/default-cover.svg"}
-            alt={currentSong.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/95 backdrop-blur-xl px-4 py-3 shadow-[0_-20px_60px_-35px_rgba(0,0,0,0.75)]">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-3 md:grid md:grid-cols-[1.2fr_1fr_0.95fr] md:items-center">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-zinc-900 shadow-lg">
+            <img
+              src={currentSong.coverImage || "/default-cover.svg"}
+              alt={currentSong.title}
+              className="h-full w-full object-cover"
+            />
+          </div>
 
-        <div className="min-w-0">
-          <h3 className="text-white text-sm font-semibold truncate">
-            {currentSong.title}
-          </h3>
-          <p className="text-gray-400 text-xs sm:text-sm truncate">
-            {currentSong.artistName || "Unknown artist"}
-          </p>
+          <div className="min-w-0">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-400/90">
+              Now playing
+            </p>
+            <h3 className="text-white text-sm md:text-base font-semibold truncate">
+              {currentSong.title}
+            </h3>
+            <p className="text-zinc-400 text-xs sm:text-sm truncate">
+              {currentSong.artistName || "Unknown artist"}
+            </p>
+          </div>
         </div>
-      </div>
 
       <div className="flex flex-col items-center gap-2 px-1 py-1">
         <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-2 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
@@ -244,12 +249,19 @@ function MusicPlayer() {
         </audio>
       </div>
 
-      <div className="flex flex-col items-center justify-center gap-2 md:items-end md:justify-end">
-        <div className="flex items-center gap-2 rounded-full bg-zinc-900/95 border border-emerald-500/20 px-2 py-2 shadow-[0_14px_45px_-30px_rgba(16,185,129,0.25)]">
+      <div className="flex flex-col items-end justify-center gap-3 md:items-end">
+        <div className="flex items-center gap-2 rounded-full bg-zinc-900/95 border border-zinc-800 px-3 py-2 shadow-[0_10px_35px_-30px_rgba(0,0,0,0.55)]">
+          <button
+            title="Queue"
+            className="rounded-full p-2 text-zinc-400 hover:text-white transition"
+          >
+            <FaListUl className="h-4 w-4" />
+          </button>
+
           <button
             title="Mute / Unmute"
             onClick={() => setMuted((m) => !m)}
-            className="rounded-full bg-emerald-500/10 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/20 transition"
+            className="rounded-full bg-zinc-950/90 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
           >
             {muted || volume === 0 ? (
               <FaVolumeMute className="h-4 w-4" />
@@ -260,15 +272,7 @@ function MusicPlayer() {
             )}
           </button>
 
-          <button
-            onClick={() => setVolume((v) => Math.max(0, +(v - 0.1).toFixed(2)))}
-            className="rounded-full bg-zinc-950/80 border border-emerald-500/20 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
-            title="Volume down"
-          >
-            <FaVolumeDown className="h-4 w-4" />
-          </button>
-
-          <div className="flex w-24 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/75 px-2 py-1 border border-zinc-800">
+          <div className="flex w-24 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/80 px-2 py-1 border border-zinc-800">
             <input
               type="range"
               min="0"
@@ -284,21 +288,13 @@ function MusicPlayer() {
               className="player-range w-full"
             />
           </div>
-
-          <button
-            onClick={() => setVolume((v) => Math.min(1, +(v + 0.1).toFixed(2)))}
-            className="rounded-full bg-zinc-950/80 border border-emerald-500/20 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
-            title="Volume up"
-          >
-            <FaVolumeUp className="h-4 w-4" />
-          </button>
         </div>
 
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-zinc-900/90 px-3 py-1 text-[10px] uppercase tracking-[0.22em] text-emerald-300 shadow-[0_4px_24px_-18px_rgba(16,185,129,0.4)]">
-          <span className="rounded-lg bg-zinc-950/95 px-2 py-1 text-[10px] tracking-[0.3em] text-white shadow-sm shadow-black/20">
+        <div className="hidden md:inline-flex items-center gap-3 rounded-full border border-zinc-800 bg-zinc-900/90 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-zinc-400 shadow-[0_4px_24px_-18px_rgba(16,185,129,0.35)]">
+          <span className="flex items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-950 px-3 py-1 text-[11px] tracking-[0.32em] text-white shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
             SPACE
           </span>
-          <span className="text-[10px] uppercase tracking-[0.18em] text-zinc-400">
+          <span className="text-[10px] tracking-[0.18em] text-zinc-400">
             play / pause
           </span>
         </div>
