@@ -1,5 +1,6 @@
 import {
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
@@ -25,9 +26,11 @@ export function MusicProvider({
         return null;
       }
     });
-  const [queue, setQueue] = useState([]);
+  const [queue, setQueue] = useState(() =>
+    currentSong ? [currentSong] : []
+  );
   const [currentIndex, setCurrentIndex] =
-    useState(-1);
+    useState(() => (currentSong ? 0 : -1));
   const [isShuffle, setIsShuffle] =
     useState(false);
 
@@ -44,7 +47,7 @@ export function MusicProvider({
     }
   }, [currentSong]);
 
-  const playSong = (song, songs = []) => {
+  const playSong = useCallback((song, songs = []) => {
     const nextQueue =
       songs.length > 0 ? songs : [song];
     const songIndex = nextQueue.findIndex(
@@ -56,10 +59,10 @@ export function MusicProvider({
       songIndex === -1 ? 0 : songIndex
     );
     setCurrentSong(song);
-  };
+  }, []);
 
-  const playNext = () => {
-    if (queue.length === 0) {
+  const playNext = useCallback(() => {
+    if (queue.length <= 1) {
       return;
     }
 
@@ -71,10 +74,10 @@ export function MusicProvider({
 
     setCurrentIndex(nextIndex);
     setCurrentSong(queue[nextIndex]);
-  };
+  }, [currentIndex, isShuffle, queue]);
 
-  const playPrevious = () => {
-    if (queue.length === 0) {
+  const playPrevious = useCallback(() => {
+    if (queue.length <= 1) {
       return;
     }
 
@@ -85,17 +88,17 @@ export function MusicProvider({
 
     setCurrentIndex(previousIndex);
     setCurrentSong(queue[previousIndex]);
-  };
+  }, [currentIndex, queue]);
 
-  const clearPlayer = () => {
+  const clearPlayer = useCallback(() => {
     setCurrentSong(null);
     setQueue([]);
     setCurrentIndex(-1);
-  };
+  }, []);
 
-  const toggleShuffle = () => {
+  const toggleShuffle = useCallback(() => {
     setIsShuffle((value) => !value);
-  };
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -112,7 +115,17 @@ export function MusicProvider({
       hasNext: queue.length > 1,
       hasPrevious: queue.length > 1,
     }),
-    [currentSong, queue, currentIndex, isShuffle]
+    [
+      currentSong,
+      queue,
+      currentIndex,
+      playSong,
+      playNext,
+      playPrevious,
+      clearPlayer,
+      isShuffle,
+      toggleShuffle,
+    ]
   );
 
   return (
