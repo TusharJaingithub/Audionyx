@@ -4,6 +4,8 @@ import {
   FaForwardStep,
   FaPause,
   FaPlay,
+  FaRepeat,
+  FaShuffle,
 } from "react-icons/fa6";
 import {
   FaVolumeUp,
@@ -25,6 +27,11 @@ function MusicPlayer() {
     playPrevious,
     hasNext,
     hasPrevious,
+    hasAutoNext,
+    isShuffle,
+    toggleShuffle,
+    repeatMode,
+    toggleRepeat,
   } = useMusic();
 
   const [volume, setVolume] = useState(() => {
@@ -83,11 +90,21 @@ function MusicPlayer() {
   };
 
   const handleEnded = () => {
-    setIsPlaying(false);
-
-    if (hasNext) {
-      playNext();
+    if (repeatMode === "one" && audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current
+        .play()
+        .then(() => setIsPlaying(true))
+        .catch((err) => console.log(err));
+      return;
     }
+
+    if (hasAutoNext) {
+      playNext({ auto: true });
+      return;
+    }
+
+    setIsPlaying(false);
   };
 
   useEffect(() => {
@@ -181,6 +198,14 @@ function MusicPlayer() {
         <div className="contents md:flex md:min-w-0 md:flex-col md:items-center md:gap-1">
           <div className="flex h-8 items-center justify-end gap-1.5 md:h-9 md:justify-center md:gap-3">
             <button
+              onClick={toggleShuffle}
+              className={`rounded-full p-1.5 transition md:p-2 ${isShuffle ? "text-[#1db954]" : "text-zinc-400 hover:text-white"}`}
+              title={isShuffle ? "Shuffle on" : "Shuffle off"}
+            >
+              <FaShuffle className="h-3.5 w-3.5 md:h-4 md:w-4" />
+            </button>
+
+            <button
               onClick={playPrevious}
               disabled={!hasPrevious}
               className="hidden rounded-full p-2 text-zinc-400 transition hover:text-white disabled:cursor-not-allowed disabled:text-zinc-700 sm:block"
@@ -208,6 +233,25 @@ function MusicPlayer() {
               title="Next"
             >
               <FaForwardStep className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={toggleRepeat}
+              className={`relative rounded-full p-1.5 transition md:p-2 ${repeatMode !== "off" ? "text-[#1db954]" : "text-zinc-400 hover:text-white"}`}
+              title={
+                repeatMode === "one"
+                  ? "Repeat one"
+                  : repeatMode === "all"
+                    ? "Repeat all"
+                    : "Repeat off"
+              }
+            >
+              <FaRepeat className="h-3.5 w-3.5 md:h-4 md:w-4" />
+              {repeatMode === "one" && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-[#1db954] text-[8px] font-black leading-none text-black">
+                  1
+                </span>
+              )}
             </button>
           </div>
 

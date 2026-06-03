@@ -33,6 +33,8 @@ export function MusicProvider({
     useState(() => (currentSong ? 0 : -1));
   const [isShuffle, setIsShuffle] =
     useState(false);
+  const [repeatMode, setRepeatMode] =
+    useState("off");
 
   useEffect(() => {
     if (currentSong) {
@@ -61,20 +63,28 @@ export function MusicProvider({
     setCurrentSong(song);
   }, []);
 
-  const playNext = useCallback(() => {
+  const playNext = useCallback((options = {}) => {
     if (queue.length <= 1) {
-      return;
+      return false;
+    }
+
+    const isAuto = options.auto === true;
+    const isAtLast = currentIndex >= queue.length - 1;
+
+    if (isAuto && !isShuffle && isAtLast && repeatMode !== "all") {
+      return false;
     }
 
     const nextIndex = isShuffle
       ? Math.floor(Math.random() * queue.length)
-      : currentIndex >= queue.length - 1
+      : isAtLast
         ? 0
         : currentIndex + 1;
 
     setCurrentIndex(nextIndex);
     setCurrentSong(queue[nextIndex]);
-  }, [currentIndex, isShuffle, queue]);
+    return true;
+  }, [currentIndex, isShuffle, queue, repeatMode]);
 
   const playPrevious = useCallback(() => {
     if (queue.length <= 1) {
@@ -100,6 +110,26 @@ export function MusicProvider({
     setIsShuffle((value) => !value);
   }, []);
 
+  const toggleRepeat = useCallback(() => {
+    setRepeatMode((mode) => {
+      if (mode === "off") {
+        return "all";
+      }
+
+      if (mode === "all") {
+        return "one";
+      }
+
+      return "off";
+    });
+  }, []);
+
+  const hasAutoNext =
+    queue.length > 1 &&
+    (isShuffle ||
+      repeatMode === "all" ||
+      currentIndex < queue.length - 1);
+
   const value = useMemo(
     () => ({
       currentSong,
@@ -112,8 +142,11 @@ export function MusicProvider({
       clearPlayer,
       isShuffle,
       toggleShuffle,
+      repeatMode,
+      toggleRepeat,
       hasNext: queue.length > 1,
       hasPrevious: queue.length > 1,
+      hasAutoNext,
     }),
     [
       currentSong,
@@ -125,6 +158,9 @@ export function MusicProvider({
       clearPlayer,
       isShuffle,
       toggleShuffle,
+      repeatMode,
+      toggleRepeat,
+      hasAutoNext,
     ]
   );
 
