@@ -32,6 +32,17 @@ function MusicPlayer() {
     return saved ? Number(saved) : 1;
   });
   const [muted, setMuted] = useState(false);
+  const [isCompact, setIsCompact] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsCompact(window.scrollY > 20);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (currentSong && audioRef.current) {
@@ -133,9 +144,9 @@ function MusicPlayer() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800 bg-zinc-950 px-3 py-2 md:px-4 md:py-3">
-      <div className="mx-auto flex max-w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:max-w-6xl">
-        <div className="flex items-center gap-3 min-w-0">
+    <div className={`fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800 bg-zinc-950 px-3 ${isCompact ? "py-1 md:py-2" : "py-2 md:py-3"}`}>
+      <div className="mx-auto flex max-w-full flex-col gap-1.5 items-center md:flex-row md:items-center md:justify-between md:max-w-6xl">
+        <div className="flex items-center gap-3 min-w-0 pr-2">
           <div className="h-12 w-12 overflow-hidden rounded-xl bg-zinc-900">
             <img
               src={currentSong.coverImage || "/default-cover.svg"}
@@ -144,17 +155,17 @@ function MusicPlayer() {
             />
           </div>
 
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-white truncate">
+          <div className="min-w-0 space-y-0.5">
+            <p className="text-sm font-semibold text-white leading-tight truncate">
               {currentSong.title}
             </p>
-            <p className="text-xs text-zinc-400 truncate">
+            <p className="text-xs text-zinc-400 leading-tight truncate">
               {currentSong.artistName || "Unknown artist"}
             </p>
           </div>
         </div>
 
-        <div className="flex flex-col items-stretch gap-2 md:flex-1">
+        <div className="flex flex-col items-center gap-2 md:flex-1">
           <div className="flex items-center justify-center gap-2">
             <button
               onClick={playPrevious}
@@ -183,7 +194,7 @@ function MusicPlayer() {
             </button>
           </div>
 
-          <div className="flex w-full flex-col gap-1">
+          <div className="flex w-full max-w-xl flex-col gap-1">
             <input
               type="range"
               min="0"
@@ -224,7 +235,7 @@ function MusicPlayer() {
           </audio>
         </div>
 
-        <div className="flex items-center gap-2 justify-end">
+        <div className="hidden sm:flex items-center gap-2 justify-end self-center">
           <button
             title="Mute / Unmute"
             onClick={() => setMuted((m) => !m)}
