@@ -136,8 +136,8 @@ function MusicPlayer() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/95 backdrop-blur-xl px-4 py-3 shadow-[0_-20px_60px_-35px_rgba(0,0,0,0.75)]">
-      <div className="mx-auto flex max-w-xs flex-col gap-3 md:grid md:grid-cols-[1.2fr_1fr_0.95fr] md:items-center md:max-w-2xl lg:max-w-4xl">
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/95 backdrop-blur-xl px-3 py-2 md:px-4 md:py-3 shadow-[0_-20px_60px_-35px_rgba(0,0,0,0.75)]">
+      <div className="mx-auto flex max-w-full flex-col gap-2 md:grid md:grid-cols-[1.2fr_1fr_0.95fr] md:items-center md:max-w-6xl">
         {/* Left: Album art and song info */}
         <div className="flex items-center gap-3 min-w-0">
           <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-zinc-900 shadow-lg">
@@ -163,7 +163,7 @@ function MusicPlayer() {
 
         {/* Center: Play controls and progress */}
         <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-2 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
+          <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-1.5 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
             <button
               onClick={playPrevious}
               disabled={!hasPrevious}
@@ -175,7 +175,7 @@ function MusicPlayer() {
 
             <button
               onClick={togglePlay}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-400 text-black shadow-lg shadow-emerald-400/20 transition hover:scale-105"
+              className="flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full bg-emerald-400 text-black shadow-lg shadow-emerald-400/20 transition hover:scale-105"
               title="Play / Pause"
             >
               {isPlaying ? <FaPause className="h-4 w-4" /> : <FaPlay className="h-4 w-4" />}
@@ -261,7 +261,7 @@ function MusicPlayer() {
               )}
             </button>
 
-            <div className="flex w-24 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/80 px-2 py-1 border border-zinc-800">
+            <div className="flex w-20 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/80 px-2 py-1 border border-zinc-800">
               <input
                 type="range"
                 min="0"
@@ -279,14 +279,7 @@ function MusicPlayer() {
             </div>
           </div>
 
-          <div className="hidden md:inline-flex items-center gap-3 rounded-full border border-zinc-800 bg-zinc-900/90 px-3 py-1 text-[10px] uppercase tracking-[0.24em] text-zinc-400 shadow-[0_4px_24px_-18px_rgba(16,185,129,0.35)]">
-            <span className="flex items-center justify-center rounded-2xl border border-zinc-700 bg-zinc-950 px-3 py-1 text-[11px] tracking-[0.32em] text-white shadow-[0_1px_2px_rgba(0,0,0,0.35)]">
-              SPACE
-            </span>
-            <span className="text-[10px] tracking-[0.18em] text-zinc-400">
-              play / pause
-            </span>
-          </div>
+          
         </div>
       </div>
     </div>
