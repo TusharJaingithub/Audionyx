@@ -202,18 +202,7 @@ function MusicPlayer() {
           </button>
         </div>
 
-        <div className="flex w-full max-w-sm flex-col gap-2">
-          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-gray-500">
-            <span>{formatTime(currentTime)}</span>
-            <span className="h-1.5 flex-1 rounded-full bg-zinc-800">
-              <span
-                className="block h-1.5 rounded-full bg-emerald-400"
-                style={{ width: `${progress}%` }}
-              />
-            </span>
-            <span>{formatTime(duration)}</span>
-          </div>
-
+        <div className="flex w-full max-w-sm flex-col gap-1.5">
           <input
             type="range"
             min="0"
@@ -225,6 +214,11 @@ function MusicPlayer() {
             }}
             className="player-range w-full"
           />
+
+          <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-zinc-500">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
+          </div>
         </div>
 
         <audio
