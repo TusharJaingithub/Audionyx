@@ -4,7 +4,6 @@ import {
   FaForwardStep,
   FaPause,
   FaPlay,
-  FaShuffle,
 } from "react-icons/fa6";
 import {
   FaVolumeUp,
@@ -24,8 +23,6 @@ function MusicPlayer() {
     currentSong,
     playNext,
     playPrevious,
-    isShuffle,
-    toggleShuffle,
     hasNext,
     hasPrevious,
   } = useMusic();
@@ -136,11 +133,10 @@ function MusicPlayer() {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/95 backdrop-blur-xl px-3 py-2 md:px-4 md:py-3 shadow-[0_-20px_60px_-35px_rgba(0,0,0,0.75)]">
-      <div className="mx-auto flex max-w-full flex-col gap-2 md:grid md:grid-cols-[1.2fr_1fr_0.95fr] md:items-center md:max-w-6xl">
-        {/* Left: Album art and song info */}
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800 bg-zinc-950 px-3 py-2 md:px-4 md:py-3">
+      <div className="mx-auto flex max-w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:max-w-6xl">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="relative h-14 w-14 overflow-hidden rounded-2xl bg-zinc-900 shadow-lg">
+          <div className="h-12 w-12 overflow-hidden rounded-xl bg-zinc-900">
             <img
               src={currentSong.coverImage || "/default-cover.svg"}
               alt={currentSong.title}
@@ -149,25 +145,21 @@ function MusicPlayer() {
           </div>
 
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-[0.3em] text-emerald-400/90">
-              Now playing
-            </p>
-            <h3 className="text-white text-sm md:text-base font-semibold truncate">
+            <p className="text-sm font-semibold text-white truncate">
               {currentSong.title}
-            </h3>
-            <p className="text-zinc-400 text-xs sm:text-sm truncate">
+            </p>
+            <p className="text-xs text-zinc-400 truncate">
               {currentSong.artistName || "Unknown artist"}
             </p>
           </div>
         </div>
 
-        {/* Center: Play controls and progress */}
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex items-center gap-2 rounded-full bg-zinc-900/90 border border-zinc-800 px-2 py-1.5 shadow-[0_10px_40px_-30px_rgba(0,0,0,0.65)]">
+        <div className="flex flex-col items-stretch gap-2 md:flex-1">
+          <div className="flex items-center justify-center gap-2">
             <button
               onClick={playPrevious}
               disabled={!hasPrevious}
-              className="rounded-full p-2 text-gray-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition"
+              className="rounded-full p-2 text-zinc-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed"
               title="Previous"
             >
               <FaBackwardStep className="h-4 w-4" />
@@ -175,7 +167,7 @@ function MusicPlayer() {
 
             <button
               onClick={togglePlay}
-              className="flex h-9 w-9 md:h-10 md:w-10 items-center justify-center rounded-full bg-emerald-400 text-black shadow-lg shadow-emerald-400/20 transition hover:scale-105"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 text-black"
               title="Play / Pause"
             >
               {isPlaying ? <FaPause className="h-4 w-4" /> : <FaPlay className="h-4 w-4" />}
@@ -184,26 +176,14 @@ function MusicPlayer() {
             <button
               onClick={playNext}
               disabled={!hasNext}
-              className="rounded-full p-2 text-gray-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed transition"
+              className="rounded-full p-2 text-zinc-300 hover:text-white disabled:text-zinc-600 disabled:cursor-not-allowed"
               title="Next"
             >
               <FaForwardStep className="h-4 w-4" />
             </button>
-
-            <button
-              onClick={toggleShuffle}
-              className={`rounded-full p-2 transition ${
-                isShuffle
-                  ? "bg-emerald-500/15 text-emerald-300"
-                  : "text-gray-300 hover:text-white"
-              }`}
-              title="Shuffle"
-            >
-              <FaShuffle className="h-4 w-4" />
-            </button>
           </div>
 
-          <div className="flex w-full max-w-sm flex-col gap-1.5">
+          <div className="flex w-full flex-col gap-1">
             <input
               type="range"
               min="0"
@@ -216,7 +196,7 @@ function MusicPlayer() {
               className="player-range w-full"
             />
 
-            <div className="flex items-center justify-between text-[10px] uppercase tracking-[0.15em] text-zinc-500">
+            <div className="flex justify-between text-[10px] text-zinc-500">
               <span>{formatTime(currentTime)}</span>
               <span>{formatTime(duration)}</span>
             </div>
@@ -244,42 +224,34 @@ function MusicPlayer() {
           </audio>
         </div>
 
-        {/* Right: Volume and spacebar hint */}
-        <div className="flex flex-col items-end justify-center gap-3">
-          <div className="flex items-center gap-2 rounded-full bg-zinc-900/95 border border-zinc-800 px-3 py-2 shadow-[0_10px_35px_-30px_rgba(0,0,0,0.55)]">
-            <button
-              title="Mute / Unmute"
-              onClick={() => setMuted((m) => !m)}
-              className="rounded-full bg-zinc-950/90 p-2 text-emerald-300 hover:text-white hover:bg-emerald-500/10 transition"
-            >
-              {muted || volume === 0 ? (
-                <FaVolumeMute className="h-4 w-4" />
-              ) : volume > 0.5 ? (
-                <FaVolumeUp className="h-4 w-4" />
-              ) : (
-                <FaVolumeDown className="h-4 w-4" />
-              )}
-            </button>
-
-            <div className="flex w-20 md:w-28 lg:w-32 items-center rounded-full bg-zinc-950/80 px-2 py-1 border border-zinc-800">
-              <input
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                value={muted ? 0 : volume}
-                onChange={(e) => {
-                  const v = Number(e.target.value);
-                  setVolume(v);
-                  if (v === 0) setMuted(true);
-                  else setMuted(false);
-                }}
-                className="player-range w-full"
-              />
-            </div>
-          </div>
-
-          
+        <div className="flex items-center gap-2 justify-end">
+          <button
+            title="Mute / Unmute"
+            onClick={() => setMuted((m) => !m)}
+            className="rounded-full p-2 text-zinc-300 hover:text-white"
+          >
+            {muted || volume === 0 ? (
+              <FaVolumeMute className="h-4 w-4" />
+            ) : volume > 0.5 ? (
+              <FaVolumeUp className="h-4 w-4" />
+            ) : (
+              <FaVolumeDown className="h-4 w-4" />
+            )}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={muted ? 0 : volume}
+            onChange={(e) => {
+              const v = Number(e.target.value);
+              setVolume(v);
+              if (v === 0) setMuted(true);
+              else setMuted(false);
+            }}
+            className="player-range w-24"
+          />
         </div>
       </div>
     </div>
