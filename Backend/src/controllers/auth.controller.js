@@ -4,9 +4,23 @@ const bcrypt = require("bcryptjs");
 
 async function registerUser(req, res) {
   const { username, email, password } = req.body;
+  const normalizedEmail = email?.trim().toLowerCase();
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: "Username, email and password are required" });
+  }
+
+  const emailRegex = /^\S+@\S+\.\S+$/;
+  if (!emailRegex.test(normalizedEmail)) {
+    return res.status(400).json({ message: "Please enter a valid email address" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters long" });
+  }
 
   const isUserAlreadyExists = await userModel.findOne({
-    $or: [{ username: username }, { email: email }],
+    $or: [{ username: username }, { email: normalizedEmail }],
   });
   if (isUserAlreadyExists) {
     return res.status(409).json({ message: "User already exists" });
@@ -15,7 +29,7 @@ async function registerUser(req, res) {
 
   const user = await userModel.create({
     username,
-    email,
+    email: normalizedEmail,
     password: hash,
     role: "user",
   });
