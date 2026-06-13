@@ -1,8 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 async function authArtist(req,res,next){
-     console.log("Cookies:", req.cookies);
-    console.log("Token:", req.cookies.token);
     const token = req.cookies.token;
     if(!token){
         return res.status(401).json({message:"Unauthorized"})
@@ -15,7 +13,6 @@ async function authArtist(req,res,next){
         req.user= decoded;      
         next();
     }catch(err){
-        console.log(err);
         return res.status(403).json({message:"You don't have permission to perform this action"})
 
     }
@@ -33,7 +30,6 @@ async function authUser(req,res,next){
         req.user= decoded;      
         next();
     }catch(err){
-        console.log(err);
         return res.status(403).json({message:"You don't have permission to perform this action"})
 
     }

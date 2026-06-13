@@ -1,11 +1,8 @@
 const musicModel = require("../models/music.model");
 const albumModel = require("../models/album.model");
 const { uploadFile } = require("../services/storage.service");
-const jwt = require("jsonwebtoken");
 
 async function createMusic(req, res) {
-  
-
     const { title } = req.body;
     const file = req.files?.music?.[0];
     const coverImage = req.files?.coverImage?.[0];
@@ -27,7 +24,7 @@ async function createMusic(req, res) {
 
     const music = await musicModel.create({
       uri: result.url,
-      title,
+      title: title.trim(),
       coverImage: coverImageResult.url,
       artist: req.user.id,
     });
@@ -45,25 +42,26 @@ async function createMusic(req, res) {
 }
 
 async function createAlbum(req, res) {
-    console.log("BODY:", req.body);
     const { title, musics } = req.body;
-     console.log("TITLE:", title);
-  console.log("MUSICS:", musics);
-    const firstMusic = await musicModel.findById(musics?.[0]);
+    const uniqueMusicIds = [...new Set(musics)];
+    const albumMusics = await musicModel
+      .find({ _id: { $in: uniqueMusicIds }, artist: req.user.id })
+      .select("_id coverImage");
 
-    if (!firstMusic) {
+    if (albumMusics.length !== uniqueMusicIds.length) {
       return res.status(400).json({
-        message: "Please select a valid song",
+        message: "Please select valid songs from your library",
       });
     }
 
+    const firstMusic = albumMusics.find((music) => String(music._id) === String(musics[0]));
     const coverImage = firstMusic.coverImage || "/default-cover.svg";
 
     const album = await albumModel.create({
-      title,
+      title: title.trim(),
       coverImage: coverImage,
       artist: req.user.id,
-      musics: musics,
+      musics: uniqueMusicIds,
     });
     res.status(201).json({
       message: "Album created successfully",
@@ -109,7 +107,7 @@ async function uploadMusicToAlbum(req, res) {
 
   const music = await musicModel.create({
     uri: result.url,
-    title,
+    title: title.trim(),
     coverImage: coverUrl,
     artist: req.user.id,
   });
@@ -145,6 +143,7 @@ async function getAllMusics(req,res){
   const [musics, total] = await Promise.all([
     musicModel
       .find(filter)
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .populate("artist","username email"),
@@ -164,7 +163,7 @@ async function getAllMusics(req,res){
 }
 
 async function getAllAlbums(req,res){
-  const albums= await albumModel.find().select("title coverImage artist").populate("artist","username email")
+  const albums= await albumModel.find().sort({ createdAt: -1 }).select("title coverImage artist").populate("artist","username email")
   res.status(200).json({
     message:"Albums fetched successfully",
     albums:albums
@@ -174,6 +173,10 @@ async function getAllAlbums(req,res){
 async function getAlbumById(req,res){
   const  albumId  = req.params.albumId;
   const album= await albumModel.findById(albumId).populate("artist","username email").populate("musics")
+  if (!album) {
+    return res.status(404).json({ message: "Album not found" });
+  }
+
   return res.status(200).json({
     message:"Album fetched successfully",
     album:album
@@ -188,11 +191,7 @@ async function getMusicsByArtist(req, res) {
 
 async function addExistingMusicsToAlbum(req, res) {
   const albumId = req.params.albumId;
-  const { musics } = req.body; // expected array of music IDs
-
-  if (!Array.isArray(musics) || musics.length === 0) {
-    return res.status(400).json({ message: "Please provide music ids to add" });
-  }
+  const { musics } = req.body;
 
   const album = await albumModel.findById(albumId);
   if (!album) {
@@ -203,16 +202,13 @@ async function addExistingMusicsToAlbum(req, res) {
     return res.status(403).json({ message: "Not authorized to modify this album" });
   }
 
-  const validIds = [];
-  for (const id of musics) {
-    const m = await musicModel.findById(id);
-    if (m) {
-      // avoid duplicates
-      if (!album.musics.find((x) => String(x) === String(id))) {
-        validIds.push(id);
-      }
-    }
-  }
+  const uniqueMusicIds = [...new Set(musics)];
+  const existingSongs = await musicModel
+    .find({ _id: { $in: uniqueMusicIds }, artist: req.user.id })
+    .select("_id");
+  const existingSongIds = new Set(existingSongs.map((music) => String(music._id)));
+  const albumSongIds = new Set(album.musics.map((music) => String(music)));
+  const validIds = uniqueMusicIds.filter((id) => existingSongIds.has(String(id)) && !albumSongIds.has(String(id)));
 
   if (validIds.length === 0) {
     return res.status(400).json({ message: "No valid songs to add" });
@@ -228,11 +224,7 @@ async function addExistingMusicsToAlbum(req, res) {
 
 async function reorderAlbumTracks(req, res) {
   const albumId = req.params.albumId;
-  const { musics } = req.body; // expected ordered array of music IDs
-
-  if (!Array.isArray(musics)) {
-    return res.status(400).json({ message: "musics must be an array" });
-  }
+  const { musics } = req.body;
 
   const album = await albumModel.findById(albumId);
   if (!album) {
@@ -244,14 +236,17 @@ async function reorderAlbumTracks(req, res) {
     return res.status(403).json({ message: "Not authorized to modify this album" });
   }
 
-  // Validate IDs exist (optional: allow partial)
-  const validated = [];
-  for (const id of musics) {
-    const m = await musicModel.findById(id);
-    if (m) validated.push(id);
+  const currentIds = album.musics.map((id) => String(id));
+  const requestedIds = musics.map((id) => String(id));
+  const hasSameTracks =
+    currentIds.length === requestedIds.length &&
+    currentIds.every((id) => requestedIds.includes(id));
+
+  if (!hasSameTracks) {
+    return res.status(400).json({ message: "Album order must include the same songs" });
   }
 
-  album.musics = validated;
+  album.musics = musics;
   await album.save();
 
   await album.populate("musics");

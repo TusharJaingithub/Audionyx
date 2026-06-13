@@ -9,6 +9,7 @@ const musicSchema = new mongoose.Schema({
     title:{
         type:String,
         required:true,
+        trim:true,
     },
     coverImage:{
         type:String,
@@ -21,7 +22,7 @@ const musicSchema = new mongoose.Schema({
     },
    
 
-})
+},{ timestamps:true })
 
 const musicModel= mongoose.model("music",musicSchema);
 
